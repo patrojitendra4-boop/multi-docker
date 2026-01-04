@@ -1,0 +1,18 @@
+sudo: required
+services: 
+  - docker
+ 
+before_install:
+  - docker build -t jitendra94/react-test -f ./client/Dockerfile.dev ./client
+# if we want to build multple images from worker and client we cna give the same with different diractory
+
+Script:
+  -docker run -e CI=true jitendra94/react-test npm test
+# if we want to run scripst give the same with test 
+
+after_success:
+# build production image 
+  -docker build -t jitendra94/multi-client ./client
+  -docker build -t jitendra94/multi-nginx ./nginx
+  -docker build -t jitendra94/multi-server ./server
+  -docker build -t jitendra94/multi-worker ./worker
